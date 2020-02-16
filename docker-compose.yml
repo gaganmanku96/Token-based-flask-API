@@ -1,6 +1,6 @@
 version: "2.1"
 services: 
-    app:
+    main_app:
         build: ./app/
         env_file: .env.file
         command: python3 app.py
@@ -24,10 +24,21 @@ services:
     
     migration:
         build: ./migration/
+        command: python3 migrate.py
         env_file: .env.file
         depends_on: 
             redis:
                 condition: service_healthy
+            postgres:
+                condition: service_healthy
+
+    chatbot:
+        build: ./chatbot/
+        command: python3 main.py
+        env_file: .env.file
+        stdin_open: true
+        tty: true
+        depends_on:
             postgres:
                 condition: service_healthy
 

@@ -32,6 +32,7 @@ def create_user():
         return jsonify(res)
     except Exception as e:
         logger.error("Error in JSON recieved "+str(e))
+        return make_error(400, "Error in JSON recieved")
 
 
 @app.route('/check_phone_number/<phone_number>', methods=['GET'])
