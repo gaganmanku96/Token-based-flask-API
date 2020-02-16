@@ -1,0 +1,26 @@
+{
+    "plan_1":{
+        "plan_code": "trl",
+        "plan_name": "trial",
+        "validity": "7 days",
+        "daily_limit": 10,
+        "price": "0$",
+        "description": "Trial plan to access all the basic services for 7 days"
+    },
+    "plan_2":{
+        "plan_code": "bsc",
+        "plan_name": "basic",
+        "validity": "30 days",
+        "daily_limit": 100,
+        "price": "60$",
+        "description": "Basic plan to access all the basic services for 30 days"
+    },
+    "plan_3":{
+        "plan_code": "bsc_annual",
+        "plan_name": "basic annual",
+        "validity": "1 year",
+        "daily_limit": 120,
+        "price": "600$",
+        "description": "Basic plan to access all the basic services for 365 days"
+    }
+}

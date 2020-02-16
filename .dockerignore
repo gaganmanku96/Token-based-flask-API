@@ -1,0 +1,4 @@
+signup/
+postgres-data/
+.vscode/
+.env.file

@@ -1,0 +1,52 @@
+version: "2.1"
+services: 
+    app:
+        build: ./app/
+        env_file: .env.file
+        command: python3 app.py
+        ports: 
+            - "8000:8000"
+        depends_on: 
+            postgres:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+    
+    ml-model:
+        build: ./ml_model/
+        env_file: .env.file
+        command: python3 main.py
+        ports: 
+            - "5001:5001"
+        depends_on: 
+            redis:
+                condition: service_healthy
+    
+    migration:
+        build: ./migration/
+        env_file: .env.file
+        depends_on: 
+            redis:
+                condition: service_healthy
+            postgres:
+                condition: service_healthy
+
+    postgres:
+        image: postgres
+        # volumes:
+        #     - ./postgres-data:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U postgres"]
+            interval: 5s
+            timeout: 5s
+            retries: 2
+
+    redis:
+        image: redis:rc-alpine
+        # volumes: 
+        #     - ./data:/data
+        healthcheck:
+            test: ["CMD", "redis-cli","ping"]
+            interval: 5s
+            timeout: 5s
+            retries: 2

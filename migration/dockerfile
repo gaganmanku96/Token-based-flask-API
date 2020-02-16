@@ -1,0 +1,20 @@
+FROM ubuntu:18.04
+RUN apt update -y &&\
+    apt install -y python3-pip &&\
+    apt install -y cron &&\
+    rm -rf /var/lib/apt/lists/*
+
+ADD crontab /etc/crontab
+RUN chmod 0644 /etc/crontab &&\
+    touch /var/log/cron.log
+
+WORKDIR /usr/src/app
+
+COPY ./requirements.txt /usr/src/app/requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# copy project
+COPY . /usr/src/app/
+
+# Run the command on container startup
+CMD cron && tail -f /var/log/cron.log
