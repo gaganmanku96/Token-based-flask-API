@@ -21,8 +21,7 @@ def make_error(status_code, message):
     return response
 
 
-@auth.verify_token
-def verify_token(token):
+def validate_token(token):
     output = r.hget('token', token)
     if output == None:
         g.message = "Invalid Token"
@@ -39,14 +38,17 @@ def verify_token(token):
 
 
 @app.route('/get_sentiment', methods=['POST'])
-@auth.login_required
 def predict_sentiment():
     sentence = request.get_json(force=True)
     sentence = sentence['text']
     if len(sentence) < 5:
         return make_error(400, "To short sentence for predicting something worth")
-    output = obj_model.predict(sentence)
-    return jsonify(output)
+    token = request.headers.get('Authorization').split()[-1]
+    if validate_token(token):
+        output = obj_model.predict(sentence)
+        return jsonify(output)
+    else:
+        return make_error(403, g.message)
 
 
 if __name__ == '__main__':

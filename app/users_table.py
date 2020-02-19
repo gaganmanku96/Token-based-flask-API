@@ -17,11 +17,11 @@ class Users:
         Initializes the connection to Postgres and initializes
         the table if not exists. 
         """
-        self.__conn = Postgres.instance()
-        self.__cursor = self.__conn.cursor()
-        self.__initialize_table()
+        self._conn = Postgres.instance()
+        self._cursor = self._conn.cursor()
+        self._initialize_table()
     
-    def __initialize_table(self):
+    def _initialize_table(self):
         """
         Creates the table if not exists.
         """
@@ -32,12 +32,12 @@ class Users:
                  start_date VARCHAR(30),\
                  token VARCHAR(40))"
         try:
-            self.__cursor.execute(query)
-            self.__conn.commit()
+            self._cursor.execute(query)
+            self._conn.commit()
         except Exception as e:
             print(e)
 
-    def __validate_data(self):
+    def _validate_data(self):
         """
         Validation to check if data satisfies certain criteria
         or not.
@@ -46,7 +46,7 @@ class Users:
         """
         pass
 
-    def __save_to_db(self, phone_number, name, plan_code, start_date, token):
+    def _save_to_db(self, phone_number, name, plan_code, start_date, token):
         """
         Inserts user data into database.
 
@@ -72,12 +72,12 @@ class Users:
         query = "INSERT INTO users(phone_number, name, plan_code, start_date, token)\
                  VALUES(%s, %s, %s, %s, %s)"
         try:
-            self.__cursor.execute(query, (phone_number, name, plan_code, start_date, token))
-            self.__conn.commit()
+            self._cursor.execute(query, (phone_number, name, plan_code, start_date, token))
+            self._conn.commit()
             logger.info("Inserted")
             return True
         except psycopg2.IntegrityError:
-            self.__conn.rollback()
+            self._conn.rollback()
             return False
         except Exception as e:
             logger.error("Error while creating new user "+str(e))
@@ -105,7 +105,7 @@ class Users:
         plan_code = inputs.get('plan_code')
         start_date = inputs.get('start_date')
         token = TokenGeneration().get_token()
-        result = self.__save_to_db(phone_number, name, plan_code, start_date, token)
+        result = self._save_to_db(phone_number, name, plan_code, start_date, token)
         if result:
             push_token_to_redis(token, plan_code)
             return token
@@ -126,8 +126,8 @@ class Users:
         """
         query = "select * from users where phone_number=%s"
         try:
-            self.__cursor.execute(query, (phone_number,))
-            rows = self.__cursor.rowcount
+            self._cursor.execute(query, (phone_number,))
+            rows = self._cursor.rowcount
             if rows>0:
                 return True
             else:

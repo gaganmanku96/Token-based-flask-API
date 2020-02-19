@@ -15,12 +15,12 @@ class Plans:
         Initializes connection to Postgres and also creates tables
         for plans and inserts all the plans available.
         """
-        self.__conn = Postgres.instance()
-        self.__cursor = self.__conn.cursor()
-        self.__initialize_table()
-        self.__initialize_plans()
+        self._conn = Postgres.instance()
+        self._cursor = self._conn.cursor()
+        self._initialize_table()
+        self._initialize_plans()
 
-    def __initialize_table(self):
+    def _initialize_table(self):
         """
         Creates the table if not exists.
         The query to create table should be modified in accordance
@@ -34,31 +34,31 @@ class Plans:
                  price VARCHAR(10),\
                  description VARCHAR(100))"
         try:
-            self.__cursor.execute(query)
-            self.__conn.commit()
+            self._cursor.execute(query)
+            self._conn.commit()
         except Exception as e:
             print(e)
 
-    def __initialize_plans(self):
+    def _initialize_plans(self):
         """
         Inserts the values into the plans table.
         If a plan already exits then it will be skipped.
         """
-        data = self.__get_plans_data()
+        data = self._get_plans_data()
         plans = dict(data)
         for _, plan in plans.items():
             query = "INSERT INTO plans(plan_code, plan_name, validity, daily_limit, price, description)\
                     VALUES(%s, %s, %s, %s, %s, %s) ON CONFLICT (plan_code) DO NOTHING;"
 
             try:
-                self.__cursor.execute(query, (plan['plan_code'], plan['plan_name'],
+                self._cursor.execute(query, (plan['plan_code'], plan['plan_name'],
                                               plan['validity'], plan['daily_limit'],
                                               plan['price'], plan['description']))
-                self.__conn.commit()
+                self._conn.commit()
             except Exception as e:
                 print(e)
 
-    def __get_plan_filename(self):
+    def _get_plan_filename(self):
         """
         If you do not pass the file_name then plans.json will be automatically
         picked.
@@ -76,7 +76,7 @@ class Plans:
         except Exception:
             return "plans.json"
 
-    def __get_plans_data(self):
+    def _get_plans_data(self):
         """
         Reads the plans file which is in json format and return the data.
 
@@ -86,11 +86,11 @@ class Plans:
             Contains all the information about plans.
         """
         data = None
-        with open(self.__get_plan_filename()) as f:
+        with open(self._get_plan_filename()) as f:
             data = json.load(f)
         return data
 
-    def __validate_data(self):
+    def _validate_data(self):
         """
         Validation to check if the data satisfies certain criteria
         like valid name, etc.
@@ -111,8 +111,8 @@ class Plans:
         logger.info("trying to fetch plans")
         query = "select * from plans"
         try:
-            self.__cursor.execute(query)
-            plans = self.__cursor.fetchall()
+            self._cursor.execute(query)
+            plans = self._cursor.fetchall()
             logger.info(str(plans))
             return plans
         except Exception as e:
@@ -129,8 +129,8 @@ class Plans:
         """
         query = "select validity from plans where plan_code=%s"
         try:
-            self.__cursor.execute(query, (plan_code,))
-            validity = self.__cursor.fetchall()
+            self._cursor.execute(query, (plan_code,))
+            validity = self._cursor.fetchall()
             return validity
         except Exception as e:
             logger.error("Error while fetching validity "+str(e))
@@ -146,8 +146,8 @@ class Plans:
         """
         query = "select daily_limit from plans where plan_code=%s"
         try:
-            self.__cursor.execute(query, (plan_code,))
-            daily_limit = self.__cursor.fetchall()
+            self._cursor.execute(query, (plan_code,))
+            daily_limit = self._cursor.fetchall()
             return daily_limit
         except Exception as e:
             logger.error("Error while fetching daily limit "+str(e))

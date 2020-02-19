@@ -5,18 +5,18 @@ import pandas as pd
 
 class ViewPlans:
     def __init__(self):
-        self.__url_view_plans = "http://0.0.0.0:8000/get_plans"
+        self._url_view_plans = "http://0.0.0.0:8000/get_plans"
     
-    def __fetch_plans(self):
+    def _fetch_plans(self):
         try:
-            result = requests.get(self.__url_view_plans)
+            result = requests.get(self._url_view_plans)
             return result.text
         except Exception as e:
             print("Couldn't fetch plans "+str(e))
             return None
 
     def view(self):
-        plans = self.__fetch_plans()
+        plans = self._fetch_plans()
         cols = ['Plan code', 'Plan Name', 'Validity', 'Daily limit', "Price"]
         if plans != []:
             df = pd.DataFrame(eval(plans))
