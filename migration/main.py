@@ -6,6 +6,8 @@ from database_connections import Redis, Postgres
 from app_logging import logger
 
 
+
+
 class Migrate:
     def __init__(self):
         self._r = Redis().connect()
@@ -84,6 +86,8 @@ class Migrate:
         self._r.hset('token', token, daily_limit)
 
     def main(self):
+        logger.info("Running Migration")
+
         tokens = self._fetch_tokens_from_redis()
         for token in tokens:
             token = str(token, 'utf-8')
@@ -91,7 +95,7 @@ class Migrate:
             plan_code, starting_date = self._fetch_plancode_startingdate(token)
             daily_limit, validity = self._fetch_dailylimit_validity(plan_code)
 
-            if self.__is_expired(starting_date, validity):
+            if self._is_expired(starting_date, validity):
                 pass
                 # maybe save
             else:
@@ -99,7 +103,11 @@ class Migrate:
                 used_requests = daily_limit - remaining_daily_limit
                 self._create_token_log(token, used_requests)
                 self._renew_token(token, daily_limit)
+        logger.info("Migration Completed")
 
 if __name__ == "__main__":
     migration_obj = Migrate()
-    schedule.every().day.at("00:00").do(migration_obj.main) 
+    schedule.every().day.at("00:00").do(migration_obj.main)
+
+    while True:
+        schedule.run_pending()

@@ -10,7 +10,6 @@ from app_logging import logger
 class Postgres:
     def __init__(self):
         pass
-        # self.connection = self.__connect()
 
     def _get_username(self):
         try:

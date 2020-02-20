@@ -3,7 +3,7 @@ services:
     main_app:
         build: ./app/
         env_file: .env.file
-        command: python3 app.py
+        command: python3 main.py
         ports: 
             - "8000:8000"
         depends_on: 
@@ -24,7 +24,7 @@ services:
     
     migration:
         build: ./migration/
-        command: python3 migrate.py
+        command: python3 main.py
         env_file: .env.file
         depends_on: 
             redis:
