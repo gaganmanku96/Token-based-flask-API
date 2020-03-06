@@ -26,7 +26,7 @@ def validate_token(token):
     if output == None:
         g.message = "Invalid Token"
         return False
-    elif int(output) <= 0:
+    elif int(output) == 0:
         g.message = "Daily limit exceeded"
         return False
     else:

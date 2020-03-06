@@ -58,7 +58,7 @@ class Postgres:
             return "postgres"
 
     def connect(self):
-        psql_pool = pool.SimpleConnectionPool(1, 20,
+        psql_pool = pool.SimpleConnectionPool(1, 110,
                                      user=self._get_username(),
                                      password=self._get_password(),
                                      host=self._get_host(),

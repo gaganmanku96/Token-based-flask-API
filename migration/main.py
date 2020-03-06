@@ -52,14 +52,10 @@ class Migrate:
         return plan_code, starting_date
     
     def _get_days(self, validity):
-        if validity == '7 days':
-            return 7
-        elif validity == '30 days':
-            return 30
-        elif validity == '1 year':
-            return 365
-        else:
-            logger.error("Validity not valid")
+        try:
+            return int(validity.split()[0])
+        except Exception as e:
+            logger.error("Validity not valid "+str(e))
             raise ValueError("Validity not valid")
     
     def _is_expired(self, starting_date, validity):

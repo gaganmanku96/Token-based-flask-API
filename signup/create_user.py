@@ -32,7 +32,7 @@ class CreateUser:
                 else:
                     return temp
             except Exception:
-                raise TypeError("Please enter"+str(dtype)+"values only")
+                raise TypeError("Please enter "+str(dtype)+" values only")
             
     def _get_phone_number(self):
         text = "Please enter phone number: "
@@ -58,7 +58,7 @@ class CreateUser:
     def _create_user(self, phone_number, name, plan_code, start_date):
         data = {"phone_number": phone_number,
                 "name": name,
-                "plan_code": plan_code,
+                "plan_id": plan_code,
                 "start_date": start_date}
         try:
             result = requests.post(self._url_create_user,

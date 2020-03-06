@@ -17,7 +17,7 @@ class ViewPlans:
 
     def view(self):
         plans = self._fetch_plans()
-        cols = ['Plan code', 'Plan Name', 'Validity', 'Daily limit', "Price"]
+        cols = ['Plan Id', 'Plan Name', 'Validity', 'Daily limit', "Price"]
         if plans != []:
             df = pd.DataFrame(eval(plans))
             df = df.iloc[:,:-1]

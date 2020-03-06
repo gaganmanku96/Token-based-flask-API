@@ -4,6 +4,7 @@ services:
         build: ./app/
         env_file: .env.file
         command: python3 main.py
+        container_name: main_app
         ports: 
             - "8000:8000"
         depends_on: 
@@ -16,6 +17,7 @@ services:
         build: ./ml_model/
         env_file: .env.file
         command: python3 main.py
+        container_name: ml_model
         ports: 
             - "5001:5001"
         depends_on: 
@@ -25,6 +27,7 @@ services:
     migration:
         build: ./migration/
         command: python3 main.py
+        container_name: migration
         env_file: .env.file
         depends_on: 
             redis:
@@ -36,6 +39,7 @@ services:
         build: ./chatbot/
         command: python3 main.py
         env_file: .env.file
+        container_name: chatbot
         stdin_open: true
         tty: true
         depends_on:
@@ -44,6 +48,9 @@ services:
 
     postgres:
         image: postgres
+        ports: 
+            - "5555:5432"
+        container_name: postgres
         # volumes:
         #     - ./postgres-data:/var/lib/postgresql/data
         healthcheck:
@@ -54,6 +61,7 @@ services:
 
     redis:
         image: redis:rc-alpine
+        container_name: redis
         # volumes: 
         #     - ./data:/data
         healthcheck:
